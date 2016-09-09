@@ -21,7 +21,7 @@ def v(i, j, d):
     return 81 * (i - 1) + 9 * (j - 1) + d
 
 
-def sudoku_clauses():
+def sudoku_clauses(with_region_rule):
     """
     Create the (11745) Sudoku clauses, and return them as a list.
     Note that these clauses are *independent* of the particular
@@ -54,19 +54,23 @@ def sudoku_clauses():
         valid([(j, i) for j in range(1, 10)])
 
     ## ensure 3x3 sub-grids "regions" have distinct values
-    # for i in 1, 4, 7:
-    #     for j in 1, 4 ,7:
-    #         valid([(i + k % 3, j + k // 3) for k in range(9)])
+    if with_region_rule:
+        for i in 1, 4, 7:
+            for j in 1, 4 ,7:
+                valid([(i + k % 3, j + k // 3) for k in range(9)])
 
-    assert len(res) == 81 * (1 + 36) + 18 * 324 # changed 27 to 18
+        assert len(res) == 81 * (1 + 36) + 27 * 324
+    else:
+        assert len(res) == 81 * (1 + 36) + 18 * 324  # changed 27 to 18
+
     return res
 
 
-def solve(grid):
+def solve(grid, with_region_rule):
     """
     solve a Sudoku grid inplace
     """
-    clauses = sudoku_clauses()
+    clauses = sudoku_clauses(with_region_rule)
     for i in range(1, 10):
         for j in range(1, 10):
             d = grid[i - 1][j - 1]
