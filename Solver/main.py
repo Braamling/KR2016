@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     # Take computational start time
     start_normal = time.time()
-    for x in xrange(0, 10000):
+    for x in xrange(0, 10):
         # Generate a medium difficult sudoku and convert to an array
         sudoku = generator.get_sudoku().get_array()
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         res = solver.solve(sudoku, with_region_rule=True)
 
         # Append the sudoku results
-        sudoku_results.append(res)
+        sudoku_results.append(res[1])
 
         # Shuffle the row's of the sudoku to create a regionless sudoku
         random.shuffle(sudoku)
@@ -38,7 +38,10 @@ if __name__ == '__main__':
         solver.solve(sudoku, with_region_rule=False)
 
         # Append the sudoku results
-        no_region_results.append(res)
+        no_region_results.append(res[1])
 
+    plt.plot(sudoku_results, no_region_results)
+    plt.margins(y=.1)
+    plt.show()
     # Print the sudoku solution.
     pprint(sudoku)
