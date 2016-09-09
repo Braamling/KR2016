@@ -11,6 +11,7 @@ This repository contains the two assignments for the course Knowledge Representa
 
 ### References
 - [Sudoku SAT solver with paper, rule generator and solver](https://www.continuum.io/blog/developer/sat-based-sudoku-solver-python)
+- [Sudoku generator by RutledgePaulV](https://github.com/RutledgePaulV/sudoku-generator)
 
 ## Authors
 Haitem Ben Yahia & Bram van den Akker (September 2016)
