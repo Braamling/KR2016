@@ -113,6 +113,13 @@ class Board:
                 b.rows[row][col].value=self.rows[row][col].value
         return b
 
+    def get_array(self):
+        board = [[0 for x in range(9)] for y in range(9)]
+        for row in xrange(0, len(self.rows)):
+            for col in xrange(0, len(self.columns)):
+                board[row][col] = self.rows[row][col].value
+        return board
+
     # returns string representation
     def __str__(self):
         output = []
