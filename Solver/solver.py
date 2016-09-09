@@ -11,6 +11,7 @@ encouraged to read the paper first.  The paper is very short, but contains
 all necessary information.
 """
 import pycosat
+import time
 
 
 def v(i, j, d):
@@ -83,17 +84,27 @@ def solve(grid, with_region_rule):
                 clauses.append([v(i, j, d)])
 
     # solve the SAT problem
-    sol = set(pycosat.solve(clauses))
+    # measure the time it takes to solve all problems
+    start_time = time.time()
+    sol = pycosat.itersolve(clauses)
+    end_time = time.time()
 
-    def read_cell(i, j):
+    amount_of_solutions = len(list(sol))
+
+    average_duration = (end_time - start_time)/float(amount_of_solutions)
+
+    def read_cell(i, j, solution):
         # return the digit of cell i, j according to the solution
         for d in range(1, 10):
-            if v(i, j, d) in sol:
+            if v(i, j, d) in solution:
                 return d
 
-    for i in range(1, 10):
-        for j in range(1, 10):
-            grid[i - 1][j - 1] = read_cell(i, j)
+    for solution in sol:
+        for i in range(1, 10):
+            for j in range(1, 10):
+                grid[i - 1][j - 1] = read_cell(i, j, solution)
+
+    return (amount_of_solutions, average_duration)
 
 
 if __name__ == '__main__':
