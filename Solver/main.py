@@ -26,13 +26,19 @@ if __name__ == '__main__':
         sudoku = generator.get_sudoku().get_array()
 
         # Solve the Sudoku with a region rule applied
-        solver.solve(sudoku, with_region_rule=True)
+        res = solver.solve(sudoku, with_region_rule=True)
+
+        # Append the sudoku results
+        sudoku_results.append(res)
 
         # Shuffle the row's of the sudoku to create a regionless sudoku
         random.shuffle(sudoku)
 
         # Solve the shuffled sudoku
         solver.solve(sudoku, with_region_rule=False)
+
+        # Append the sudoku results
+        no_region_results.append(res)
 
     # Print the sudoku solution.
     pprint(sudoku)
