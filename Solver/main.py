@@ -1,13 +1,16 @@
 """
-The main script that generates sudokus with and without region rules and solves these with pycosat
+The main script that generates sudokus with and without region rules
+and solves these with pycosat
 """
 import solver
 from pprint import pprint
-import generator
+from sudoku_generator import SudokuGenerator
 
 
 if __name__ == '__main__':
-    #new_sudoku_example = generator.generate() # change this later to a loop
+    generator = SudokuGenerator('medium')
+
+    print generator.get_sudoku()
 
     hard = [[0, 2, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 3, 6, 0, 0, 0, 0, 0],
