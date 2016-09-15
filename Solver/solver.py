@@ -83,15 +83,25 @@ def solve(grid, with_region_rule):
             if d:
                 clauses.append([v(i, j, d)])
 
+    # make a copy to be used in solving, as we are not sure if solving this changes the list of clauses
+    clauses_copy = list(clauses)
+
     # solve the SAT problem
     # measure the time it takes to solve all problems
     start_time = time.time()
-    sol = pycosat.itersolve(clauses)
+    sol = pycosat.itersolve(clauses, verbose = 0)
     end_time = time.time()
+
+    # solve the SAT problem
+    # measure the time it takes to get one solution
+    start_time2 = time.time()
+    singlesol = pycosat.solve(clauses_copy, verbose=0)
+    end_time2 = time.time()
 
     amount_of_solutions = len(list(sol))
 
     average_duration = (end_time - start_time)/float(amount_of_solutions)
+    single_duration = end_time2 - start_time2
 
     def read_cell(i, j, solution):
         # return the digit of cell i, j according to the solution
@@ -104,7 +114,11 @@ def solve(grid, with_region_rule):
             for j in range(1, 10):
                 grid[i - 1][j - 1] = read_cell(i, j, solution)
 
-    return (amount_of_solutions, average_duration)
+    for i in range(1, 10):
+        for j in range(1, 10):
+            grid[i - 1][j - 1] = read_cell(i, j, singlesol)
+
+    return (amount_of_solutions, average_duration, single_duration)
 
 
 if __name__ == '__main__':
