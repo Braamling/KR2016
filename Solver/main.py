@@ -19,7 +19,7 @@ def get_sudoku(csv_file):
 
     # Convert the sudoku to an numpy array for reshaping and conver to int
     sudoku = np.asarray(list(sudoku)).astype(np.int)
-
+    print sudoku.reshape(9, 9)
     return sudoku.reshape(9, 9).tolist()
 
 
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     generator = SudokuGenerator('medium')
 
     # Open csv file
-    sudokus = csv.reader(open("input/sudoku_easy_100k.csv"), delimiter=",")
+    sudokus = csv.reader(open("input/sudoku_expert_100k.csv"), delimiter=",")
 
     # Open and initialize a csv file + writer.
     with open('results.csv', 'wb') as csvfile:
@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
         for x in xrange(0, 100):
             sudoku = get_sudoku(sudokus)
+            print sudoku
             # Generate a medium difficult sudoku and convert to an array
             # sudoku = generator.get_sudoku().get_array()
 
@@ -49,8 +50,10 @@ if __name__ == '__main__':
             # Shuffle the row's of the sudoku to create a regionless sudoku
             random.shuffle(sudoku)
 
+            print "solver1"
             # Solve the shuffled sudoku
-            res_alt = solver.solve(sudoku, with_region_rule=False)
+            res_alt = solver.solve(sudoku, with_region_rule=True)
+            print "solver"
 
             # Append the sudoku results
             sudoku_results.append(res_normal[1])
