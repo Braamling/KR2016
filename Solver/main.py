@@ -4,12 +4,23 @@ and solves these with pycosat
 """
 import solver
 import random
-import time
+import csv
+import numpy as np
 
 import matplotlib.pyplot as plt
 
 from pprint import pprint
 from sudoku_generator import SudokuGenerator
+
+
+def get_sudoku(csv_file):
+    # Get the first sudoku and replace empty cells with 0's
+    sudoku = csv_file.next()[0].replace(".", "0")
+
+    # Convert the sudoku to an numpy array for reshaping and conver to int
+    sudoku = np.asarray(list(sudoku)).astype(np.int)
+
+    return sudoku.reshape(9, 9).tolist()
 
 
 if __name__ == '__main__':
@@ -19,24 +30,33 @@ if __name__ == '__main__':
     # Create a Sudoku generator instance for medium difficult sudokus.
     generator = SudokuGenerator('medium')
 
-    # Take computational start time
-    start_normal = time.time()
-    for x in xrange(0, 100):
-        # Generate a medium difficult sudoku and convert to an array
-        sudoku = generator.get_sudoku().get_array()
+    # Open csv file
+    sudokus = csv.reader(open("input/sudoku_easy_100k.csv"), delimiter=",")
 
-        # Solve the Sudoku with a region rule applied
-        res_normal = solver.solve(sudoku, with_region_rule=True)
+    # Open and initialize a csv file + writer.
+    with open('results.csv', 'wb') as csvfile:
+        csv_writer = csv.writer(csvfile, delimiter=' ',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        # Shuffle the row's of the sudoku to create a regionless sudoku
-        random.shuffle(sudoku)
+        for x in xrange(0, 100):
+            sudoku = get_sudoku(sudokus)
+            # Generate a medium difficult sudoku and convert to an array
+            # sudoku = generator.get_sudoku().get_array()
 
-        # Solve the shuffled sudoku
-        res_alt = solver.solve(sudoku, with_region_rule=False)
+            # Solve the Sudoku with a region rule applied
+            res_normal = solver.solve(sudoku, with_region_rule=True)
 
-        if res_alt[0] != 1:
+            # Shuffle the row's of the sudoku to create a regionless sudoku
+            random.shuffle(sudoku)
+
+            # Solve the shuffled sudoku
+            res_alt = solver.solve(sudoku, with_region_rule=False)
+
             # Append the sudoku results
             sudoku_results.append(res_normal[1])
+
+            # Write line to csv
+            csv_writer.writerow(res_normal + res_alt)
 
             # Append the sudoku results
             no_region_results.append(res_alt[1])
