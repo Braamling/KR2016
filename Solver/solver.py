@@ -89,10 +89,10 @@ def solve(grid, with_region_rule):
 
     # solve the SAT problem
     # measure the time it takes to solve all problems
-    start_time = time.time()
+    # start_time = time.time()
+    # # sol = pycosat.itersolve(clauses, verbose = 0)
     # sol = pycosat.itersolve(clauses, verbose = 0)
-    sol = pycosat.itersolve(clauses, verbose = 0)
-    end_time = time.time()
+    # end_time = time.time()
 
     # solve the SAT problem
     # measure the time it takes to get one solution
@@ -100,9 +100,9 @@ def solve(grid, with_region_rule):
     singlesol = pycosat.solve(clauses_copy, verbose=0)
     end_time2 = time.time()
 
-    amount_of_solutions = len(list(sol))
+    # amount_of_solutions = len(list(sol))
 
-    average_duration = (end_time - start_time)/float(amount_of_solutions)
+    # average_duration = (end_time - start_time)/float(amount_of_solutions)
     single_duration = end_time2 - start_time2
 
     def read_cell(i, j, solution):
@@ -111,16 +111,16 @@ def solve(grid, with_region_rule):
             if v(i, j, d) in solution:
                 return d
 
-    for solution in sol:
-        for i in range(1, 10):
-            for j in range(1, 10):
-                grid[i - 1][j - 1] = read_cell(i, j, solution)
+    # for solution in sol:
+    #     for i in range(1, 10):
+    #         for j in range(1, 10):
+    #             grid[i - 1][j - 1] = read_cell(i, j, solution)
 
     for i in range(1, 10):
         for j in range(1, 10):
             grid[i - 1][j - 1] = read_cell(i, j, singlesol)
 
-    return (amount_of_solutions, average_duration, single_duration)
+    return single_duration
 
 
 if __name__ == '__main__':
