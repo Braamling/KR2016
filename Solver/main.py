@@ -5,12 +5,10 @@ and solves these with pycosat
 import solver
 import random
 import csv
+
 import numpy as np
 
 import matplotlib.pyplot as plt
-
-from pprint import pprint
-from sudoku_generator import SudokuGenerator
 
 
 def get_sudoku(csv_file):
@@ -19,16 +17,26 @@ def get_sudoku(csv_file):
 
     # Convert the sudoku to an numpy array for reshaping and conver to int
     sudoku = np.asarray(list(sudoku)).astype(np.int)
-    print sudoku.reshape(9, 9)
+
     return sudoku.reshape(9, 9).tolist()
+
+
+def plot_sudoku(results, no_region_first, no_region_average,
+                shuffle_first, shuffle_average):
+    plt.plot(results, 'b-', label='sudoku')
+    plt.plot(no_region_first, 'r-', label='no regions, first')
+    plt.plot(no_region_average, 'g-', label='no regions, average')
+    plt.plot(shuffle_first, 'y-', label='no regions, average')
+    plt.plot(shuffle_average, 'p-', label='no regions, average')
+    plt.show()
 
 
 if __name__ == '__main__':
     sudoku_results = []
-    no_region_results = []
-
-    # Create a Sudoku generator instance for medium difficult sudokus.
-    generator = SudokuGenerator('medium')
+    shuffle_avg = []
+    shuffle_first = []
+    no_region_avg = []
+    no_region_first = []
 
     # Open csv file
     sudokus = csv.reader(open("input/sudoku_expert_100k.csv"), delimiter=",")
@@ -38,34 +46,34 @@ if __name__ == '__main__':
         csv_writer = csv.writer(csvfile, delimiter=' ',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-        for x in xrange(0, 100):
+        for x in xrange(0, 3000):
+            print x
+
             sudoku = get_sudoku(sudokus)
-            print sudoku
-            # Generate a medium difficult sudoku and convert to an array
-            # sudoku = generator.get_sudoku().get_array()
 
             # Solve the Sudoku with a region rule applied
             res_normal = solver.solve(sudoku, with_region_rule=True)
 
+            res_alt = solver.solve(sudoku, with_region_rule=False)
+
             # Shuffle the row's of the sudoku to create a regionless sudoku
             random.shuffle(sudoku)
 
-            print "solver1"
             # Solve the shuffled sudoku
-            res_alt = solver.solve(sudoku, with_region_rule=True)
-            print "solver"
+            res_shuf = solver.solve(sudoku, with_region_rule=False)
 
             # Append the sudoku results
             sudoku_results.append(res_normal[1])
 
             # Write line to csv
-            csv_writer.writerow(res_normal + res_alt)
+            csv_writer.writerow(res_normal + res_alt + res_shuf)
 
             # Append the sudoku results
-            no_region_results.append(res_alt[1])
+            no_region_avg.append(res_alt[1])
+            no_region_first.append(res_alt[2])
+            shuffle_avg.append(res_shuf[1])
+            shuffle_first.append(res_shuf[2])
 
-    plt.plot(sudoku_results, 'b-', label='sudoku')
-    plt.plot(no_region_results, 'r-', label='no regions')
-    plt.show()
-    # Print the sudoku solution.
-    pprint(sudoku)
+    # Plot all the statistics of the sudoku solver
+    plot_sudoku(sudoku_results, no_region_first,
+                no_region_avg, shuffle_first, shuffle_avg)

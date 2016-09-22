@@ -10,6 +10,7 @@ which calculates the 324 clauses corresponding to 9 cells, you are strongly
 encouraged to read the paper first.  The paper is very short, but contains
 all necessary information.
 """
+import cProfile
 import pycosat
 import time
 
@@ -89,6 +90,7 @@ def solve(grid, with_region_rule):
     # solve the SAT problem
     # measure the time it takes to solve all problems
     start_time = time.time()
+    # sol = pycosat.itersolve(clauses, verbose = 0)
     sol = pycosat.itersolve(clauses, verbose = 0)
     end_time = time.time()
 
