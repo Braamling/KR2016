@@ -21,5 +21,5 @@ In case you only want to see the example output (after running the full program)
 Start the python webserver.
 > python -m SimpleHTTPServer
 
-Point your browser to the example file
-> http://localhost:8000/example.html
+Point your browser to the webserver location.
+> http://localhost:8000/
