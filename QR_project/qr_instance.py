@@ -17,18 +17,26 @@ class QRInstance:
     def set_derivitive(self, derivitive):
         self.cur_div = derivitive
 
+    """
+    Update the quantity of an instance by issuing its derivitive.
+    """
     def update_quantity(self):
+        # Get the current index in the quantities list of the instance.
         cur_index = self.quantities.index(self.cur_quantity)
-        print len(self.quantities)
+
+        # Check the derivitive and update the quanitity
         if self.cur_div is "+":
             index = cur_index + 1
             if index is len(self.quantities):
+                # Quanity stays the same
                 index = cur_index
         elif self.cur_div is "-":
             index = cur_index - 1
             if index < 0:
+                # Quanity stays the same
                 index = 0
         else:
+            # Quanity stays the same
             index = cur_index
 
         self.cur_quantity = self.quantities[index]
