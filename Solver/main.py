@@ -46,7 +46,7 @@ if __name__ == '__main__':
     no_region_first = np.empty([n_sodukus, rewinds])
 
     # Open csv file
-    sudoku_file = open("input/sudoku_expert_100k.csv")
+    sudoku_file = open("input/sudoku_simple_100k.csv")
     sudokus = csv.reader(sudoku_file, delimiter=",")
 
     # Open and initialize a csv file + writer.
