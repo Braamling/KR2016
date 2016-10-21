@@ -2,6 +2,7 @@ from state import State
 
 
 class BonusState(State):
+    id = None
 
     def __init__(self, inflow, volume, outflow, height, pressure):
         self.inflow = inflow
@@ -16,6 +17,19 @@ class BonusState(State):
         self.outflow.update_quantity()
         self.height.update_quantity()
         self.pressure.update_quantity()
+
+    def get_height(self):
+        return self.height
+
+    def get_pressure(self):
+        return self.pressure
+
+    def to_string(self):
+        return (str(self.id) + ": " + self.inflow.to_string() +
+                self.volume.to_string() +
+                self.outflow.to_string() +
+                self.height.to_string() +
+                self.pressure.to_string())
 
     def __repr__(self):
         return (str(self.id) + ": " + self.inflow.to_string() +

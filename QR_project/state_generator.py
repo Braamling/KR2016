@@ -4,8 +4,11 @@ from outflow import Outflow
 from state import State
 
 import itertools
-import pprint
+# import pprint
 import copy
+
+
+import logging
 
 
 class StateGenerator:
@@ -27,18 +30,23 @@ class StateGenerator:
             self.states.append(State(Inflow(state_q[0], None),
                                      Volume(state_q[1], None),
                                      Outflow(state_q[2], None)))
-
+        print "[trace] - Generate states - remove constraints"
         self.remove_inconsistencies()
 
+        print "[trace] - Generate states - Calculate derivitives"
         self.calc_derives()
 
+        print "[trace] - Generate states - Unpack the inflow derivitives"
         self.unpack_inflow()
 
+        print "[trace] - Generate states - Set state ids"
         # At this point all valid states are created and should receive an id
         for i, state in enumerate(self.states):
             state.set_id(i)
 
+        print "[trace] - Create paths - Start"
         self.create_paths()
+        print "[trace] - Create paths - End"
 
         return self.states, self.paths
 
@@ -86,7 +94,6 @@ class StateGenerator:
     """
     def calc_derives(self):
         self.calc_volume_derives()
-
         self.calc_outflow_derives()
 
     """
@@ -117,10 +124,11 @@ class StateGenerator:
 
         # if the derivitive is uncertain, create all possible states
         if derivive is "?":
-            for deriv in self.derivitives:
+            for deriv in state.get_volume().get_exogenius_options():
                 tmp_state = copy.deepcopy(state)
                 tmp_state.get_volume().set_derivitive(deriv)
                 tmp_states.append(tmp_state)
+                print tmp_state
         else:
             state.get_volume().set_derivitive(derivive)
             tmp_states.append(state)
@@ -195,6 +203,7 @@ class StateGenerator:
 
         return "0"
 
+
     """
     Create all paths between differents states.
     """
@@ -207,7 +216,24 @@ class StateGenerator:
 
             # Update all the quantities and deritives to the next step.
             tmp_state.update_quantities()
-            new_states = self.calc_volume_derive(tmp_state)
+
+            # Get the exogenius derivitives for the inflow and create extra states.
+            exogenius_divs = tmp_state.get_inflow().get_exogenius_options()
+
+            # Store all exogenius states
+            ext_states = [tmp_state]
+            for div in exogenius_divs:
+                _state = copy.deepcopy(tmp_state)
+                _state.get_inflow().set_derivitive(div)
+                ext_states.append(_state)
+
+            # Get all new states based on the new volume derivites
+            new_states = []
+            for _state in ext_states:
+                extra_states = self.calc_volume_derive(_state)
+                for new_state in extra_states:
+                    new_states.append(new_state)
+
 
             for _state in new_states:
                 _state = self.calc_outflow_derive(_state)

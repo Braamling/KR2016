@@ -1,6 +1,7 @@
 # import networkx as nx
 import webbrowser
-import csv
+from random import randint
+import json
 
 
 class Graph():
@@ -9,20 +10,27 @@ class Graph():
         self.nodes = states
 
     def render_graph(self):
-        self.store_graph()
+        self.store_json_graph()
         print "Opening webbrowser - http://localhost:8000"
         webbrowser.open('http://localhost:8000')
 
-    def store_graph(self):
-        with open('output.csv', 'w') as csvfile:
-            fieldnames = ['source', 'target', 'value']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+    def store_json_graph(self):
+        graph = {'nodes': [], 'edges': []}
 
-            for edge in self.edges:
-                writer.writerow({'source': edge[0],
-                                 'target': edge[1],
-                                 'value': 5.0})
+        for node in self.nodes:
+            graph['nodes'].append({'title': node.to_string(),
+                                   'id': node.get_id(),
+                                   'x': node.get_id() * 75,
+                                   'y': randint(0,1200)})
+
+        for edge in self.edges:
+            graph['edges'].append({'source': edge[0].get_id(),
+                                   'target': edge[1].get_id()})
+
+        with open('result.json', 'w') as fp:
+            json.dump(graph, fp)
+
+
 
     def __eq__(self, other):
         return (self.get_quantity() is other.get_quantity() and

@@ -25,6 +25,11 @@ class State():
         self.volume.update_quantity()
         self.outflow.update_quantity()
 
+    def to_string(self):
+        return str(self.id) + ": " + self.inflow.to_string() +\
+               self.volume.to_string() +\
+               self.outflow.to_string()
+
     def __repr__(self):
         return str(self.id) + ": " + self.inflow.to_string() +\
                self.volume.to_string() +\
